@@ -3,12 +3,25 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link href="./css/styles.css" rel="stylesheet" type="text/css">
   </head>
   <body>
+    <form>
+      <div class="form-input">
+        <label>Subreddit:</label><input id="subreddit" name="subreddit" type="text" required></input>
+      </div>
+      <div class="form-input">
+        <label>Interval (seconds):</label><input id="interval" name="interval" type="number" required></input>
+      </div>
+      <div class="form-input">
+        <button id="submit-button" type="button">Track</button>
+      </div>
+    </form>
     <div id="counter"></div>
     <div id ="new-links"></div>
     <div id="viewed"></div>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-    <script src="./app.js"></script>
+    <button id="clear-button">Clear all</button>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/app.js"></script>
   </body>
 </html>
