@@ -1,10 +1,8 @@
 var subreddit = document.getElementById('subreddit');
 var interval = document.getElementById('interval');
-var counterDiv = document.getElementById('counter');
 var newLinks = document.getElementById('new-links');
 var submitBtn = document.getElementById('submit-button');
 var clearBtn = document.getElementById('clear-button');
-
 var BGPage = chrome.extension.getBackgroundPage();
 
 clearBtn.style.display = 'none';
@@ -17,9 +15,6 @@ if (localStorage['interval'] !== undefined){
 }
 if (localStorage['submitBtn'] !== undefined){
   submitBtn.innerHTML = localStorage.getItem('submitBtn');
-}
-if (localStorage['counterDiv'] !== undefined){
-  counterDiv.innerHTML = localStorage.getItem('counterDiv');
 }
 if (localStorage['newLinks'] !== undefined){
   newLinks.innerHTML = localStorage.getItem('newLinks');
@@ -34,10 +29,9 @@ submitBtn.addEventListener('click', function(event){
 
 clearBtn.addEventListener('click', function(){
   BGPage.counter = 0;
+  chrome.browserAction.setBadgeText({text: ''});
   newLinks.innerHTML = '';
-  counterDiv.innerHTML = '';
   this.style.display = 'none';
-  localStorage.setItem('counterDiv', counterDiv.innerHTML);
   localStorage.setItem('newLinks', newLinks.innerHTML);
   localStorage.setItem('clearBtn', this.innerHTML);
 });
@@ -48,13 +42,11 @@ newLinks.addEventListener('click', function(event){
     event.target.parentNode.removeChild(event.target);
     localStorage.setItem('newLinks', newLinks.innerHTML);
     BGPage.counter -= 1;
+    chrome.browserAction.setBadgeText({text: `${BGPage.counter}`});
     if (BGPage.counter === 0){
-      counterDiv.innerHTML = '';
+      chrome.browserAction.setBadgeText({text: ''});
       clearBtn.style.display = 'none';
-    } else {
-    counterDiv.innerHTML = `<h3>New posts: ${BGPage.counter}</h3>`;
     }
-    localStorage.setItem('counterDiv', counterDiv.innerHTML);
     localStorage.setItem('clearBtn', this.innerHTML);
   }
 });

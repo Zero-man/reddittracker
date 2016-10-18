@@ -36,14 +36,12 @@ function retrieveData(item){
           newPosts = link;
           counter += 1;
           chrome.browserAction.setBadgeText({text: `${counter}`});
-          item.counterDiv.innerHTML = `<h3>New posts: ${counter}</h3>`;
           var newItem = item.document.createElement('div');
           newItem.className += 'new';
           newItem.innerHTML = `<a href="https://www.reddit.com${link}">${title}</a><img class="trash" src="./img/delete-icon.png">`
           item.newLinks.appendChild(newItem);
           item.clearBtn.style.display = 'inline-block';
           localStorage.setItem('newPosts', newPosts);
-          localStorage.setItem('counterDiv', item.counterDiv.innerHTML);
           localStorage.setItem('newLinks', item.newLinks.innerHTML);
           localStorage.setItem('clearBtn', item.clearBtn.style.display);
      }
