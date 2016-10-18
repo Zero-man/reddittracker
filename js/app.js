@@ -1,64 +1,60 @@
-
 var subreddit = document.getElementById('subreddit');
 var interval = document.getElementById('interval');
 var counterDiv = document.getElementById('counter');
 var newLinks = document.getElementById('new-links');
 var submitBtn = document.getElementById('submit-button');
 var clearBtn = document.getElementById('clear-button');
-var intervalID;
-var newPosts = [];
-var counter = 0;
+
+var BGPage = chrome.extension.getBackgroundPage();
 
 clearBtn.style.display = 'none';
+
+if (localStorage['subreddit'] !== undefined){
+  subreddit.value = localStorage.getItem('subreddit');
+}
+if (localStorage['interval'] !== undefined){
+  interval.value = localStorage.getItem('interval');
+}
+if (localStorage['submitBtn'] !== undefined){
+  submitBtn.innerHTML = localStorage.getItem('submitBtn');
+}
+if (localStorage['counterDiv'] !== undefined){
+  counterDiv.innerHTML = localStorage.getItem('counterDiv');
+}
+if (localStorage['newLinks'] !== undefined){
+  newLinks.innerHTML = localStorage.getItem('newLinks');
+}
+if (localStorage['clearBtn'] !== undefined){
+  clearBtn.style.display = localStorage.getItem('clearBtn');
+}
+
 submitBtn.addEventListener('click', function(event){
-  if (subreddit.value === '' || interval.value === ''){
-  return null;
-  }
-  if (submitBtn.innerHTML == "Track") {
-    submitBtn.innerHTML = "Stop Tracking";
-  } else {
-    submitBtn.innerHTML = "Track";
-  }
-  if (!intervalID) {
-    intervalID = setInterval(apiCall, interval.value * 1000);
-  } else {
-    clearInterval(intervalID);
-    intervalId = null;
-  }
+  BGPage.apiCall();
 });
 
 clearBtn.addEventListener('click', function(){
-  newPosts = [];
-  counter = 0;
+  BGPage.counter = 0;
   newLinks.innerHTML = '';
-  counterDiv.innerHTML = `<h3>New posts: ${counter}</h3>`;
+  counterDiv.innerHTML = '';
   this.style.display = 'none';
+  localStorage.setItem('counterDiv', counterDiv.innerHTML);
+  localStorage.setItem('newLinks', newLinks.innerHTML);
+  localStorage.setItem('clearBtn', this.innerHTML);
 });
 
 newLinks.addEventListener('click', function(event){
   if (event.target.tagName.toLowerCase() === 'img'){
     event.target.parentNode.removeChild(event.target.previousElementSibling);
     event.target.parentNode.removeChild(event.target);
-    counter -= 1;
-    counterDiv.innerHTML = `<h3>New posts: ${counter}</h3>`;
+    localStorage.setItem('newLinks', newLinks.innerHTML);
+    BGPage.counter -= 1;
+    if (BGPage.counter === 0){
+      counterDiv.innerHTML = '';
+      clearBtn.style.display = 'none';
+    } else {
+    counterDiv.innerHTML = `<h3>New posts: ${BGPage.counter}</h3>`;
+    }
+    localStorage.setItem('counterDiv', counterDiv.innerHTML);
+    localStorage.setItem('clearBtn', this.innerHTML);
   }
 });
-
-function apiCall(){
-  $.getJSON(
-         `http://www.reddit.com/r/${subreddit.value}/new.json?`, function (data){
-           var title = data.data.children[0].data.title;
-           var link = data.data.children[0].data.permalink;
-           if (!newPosts.includes(link)){
-             newPosts.push(link);
-             counter += 1;
-             counterDiv.innerHTML = `<h3>New posts: ${counter}</h3>`;
-             var newItem = document.createElement('div');
-             newItem.className += 'new';
-             newItem.innerHTML = `<a href="https://www.reddit.com${link}">${title}</a><img class="trash" src="./img/delete-icon.png">`
-             newLinks.appendChild(newItem);
-             clearBtn.style.display = 'inline-block';
-           }
-         });
-
-}
