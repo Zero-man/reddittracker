@@ -40,9 +40,10 @@ body {
   height: 100%;
 }
 
-.new {
-  display: flex;
-  justify-content: space-between;
+a {
+  display: block;
+  font-size: 1.2em;
+  padding: 5px 0;
 }
 .new a {
   font-size: 1.2em;

@@ -1,12 +1,13 @@
-var newPosts = '';
-var counter = 0;
+
+var newPosts = [];
+var counter = newPosts.length;
 var intervalID;
+var currentLink = '';
 
 function apiCall(){
   var views = chrome.extension.getViews({type: 'popup'})[0];
-  var subreddit = views.subreddit.value;
   var interval = parseInt(views.interval.value) * 1000;
-  if (subreddit === '' || interval === null) {
+  if (views.subreddit.value === '' || interval === null) {
     return null;
   }
   if (interval < 1 || interval > 3600000) {
@@ -27,23 +28,38 @@ function apiCall(){
   localStorage.setItem('interval', views.interval.value);
 }
 
+function clearOnClick(){
+  var views = chrome.extension.getViews({type: 'popup'})[0];
+  newPosts = [];
+  chrome.browserAction.setBadgeText({text: ''});
+  views.newLinks.innerHTML = '';
+  views.clearBtn.style.display = 'none';
+}
+
 function retrieveData(item){
+  var views = chrome.extension.getViews({type: 'popup'})[0];
   $.getJSON(
      `http://www.reddit.com/r/${item.subreddit.value}/new.json?`, function (data){
         var title = data.data.children[0].data.title;
         var link = data.data.children[0].data.permalink;
-        if (newPosts !== link){
-          newPosts = link;
-          counter += 1;
+        if (currentLink !== link){
+          currentLink = link;
+          newPosts.unshift([link, title]);
+          counter = newPosts.length;
           chrome.browserAction.setBadgeText({text: `${counter}`});
-          var newItem = item.document.createElement('div');
-          newItem.className += 'new';
-          newItem.innerHTML = `<a href="https://www.reddit.com${link}">${title}</a><img class="trash" src="./img/delete-icon.png">`
-          item.newLinks.appendChild(newItem);
-          item.clearBtn.style.display = 'inline-block';
-          localStorage.setItem('newPosts', newPosts);
-          localStorage.setItem('newLinks', item.newLinks.innerHTML);
-          localStorage.setItem('clearBtn', item.clearBtn.style.display);
+
+          if (views){
+            var newItem = document.createElement('a');
+            var newLink = document.createTextNode(newPosts[0][1]);
+            newItem.appendChild(newLink);
+            newItem.title = newPosts[0][1];
+            newItem.href = `https://www.reddit.com${newPosts[0][0]}`;
+            newItem.addEventListener('click', function(){
+                chrome.tabs.create({ url: newItem.href });
+            });
+            views.newLinks.insertBefore(newItem, views.newLinks.firstChild);
+            views.clearBtn.style.display = 'inline-block';
+          }
      }
   });
 }
