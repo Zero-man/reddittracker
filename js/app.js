@@ -28,7 +28,7 @@ if (BGPage.localStorage['subreddit'] !== undefined){
 if (BGPage.localStorage['interval'] !== undefined){
   interval.value = BGPage.localStorage.getItem('interval');
 }
-if (BGPage.localStorage['submitBtn'] !== undefined){
+if (BGPage.localStorage['submitBtn'] !== undefined && BGPage.intervalID !== undefined){
   submitBtn.innerHTML = BGPage.localStorage.getItem('submitBtn');
 }
 

@@ -14,7 +14,7 @@
     "128": "icon128.png"
   },
   "browser_action": {
-    "default_icon": "./img/icon16.png",
+    "default_icon": "icon16.png",
     "default_popup": "popup.html"
   },
   "permissions": [
