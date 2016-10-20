@@ -3,7 +3,7 @@
 
   "name": "Subreddit Tracker",
   "description": "This extension tracks a given subreddit's new posts.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "background": {
     "scripts": ["./js/jquery.min.js", "./js/background.js"],
     "persistent": true

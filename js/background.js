@@ -7,10 +7,12 @@ var currentLink = '';
 function apiCall(){
   var views = chrome.extension.getViews({type: 'popup'})[0];
   var interval = parseInt(views.interval.value) * 1000;
-  if (views.subreddit.value === '' || interval === null) {
+  if (views.subreddit.value === '' || views.interval.value === '') {
+    alert("Please complete both fields.")
     return null;
   }
-  if (interval < 1 || interval > 3600000) {
+  if (views.interval.value < 1 || views.interval.value > 3600) {
+    alert("Please enter an interval value between 1 and 3600 seconds.")
     return null;
   }
   if (!intervalID){
@@ -39,7 +41,7 @@ function clearOnClick(){
 function retrieveData(item){
   var views = chrome.extension.getViews({type: 'popup'})[0];
   $.getJSON(
-     `http://www.reddit.com/r/${item.subreddit.value}/new.json?`, function (data){
+     `http://www.reddit.com/r/${item.subreddit.value.trim()}/new.json?`, function (data){
         var title = data.data.children[0].data.title;
         var link = data.data.children[0].data.permalink;
         if (currentLink !== link){
@@ -55,7 +57,7 @@ function retrieveData(item){
             newItem.title = newPosts[0][1];
             newItem.href = `https://www.reddit.com${newPosts[0][0]}`;
             newItem.addEventListener('click', function(){
-                chrome.tabs.create({ url: newItem.href });
+              chrome.tabs.create({ url: newItem.href });
             });
             views.newLinks.insertBefore(newItem, views.newLinks.firstChild);
             views.clearBtn.style.display = 'inline-block';
