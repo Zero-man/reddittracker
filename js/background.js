@@ -40,28 +40,35 @@ function clearOnClick(){
 
 function retrieveData(item){
   var views = chrome.extension.getViews({type: 'popup'})[0];
-  $.getJSON(
-     `http://www.reddit.com/r/${item.subreddit.value.trim()}/new.json?`, function (data){
-        var title = data.data.children[0].data.title;
-        var link = data.data.children[0].data.permalink;
-        if (currentLink !== link){
-          currentLink = link;
-          newPosts.unshift([link, title]);
-          counter = newPosts.length;
-          chrome.browserAction.setBadgeText({text: `${counter}`});
-
-          if (views){
-            var newItem = document.createElement('a');
-            var newLink = document.createTextNode(newPosts[0][1]);
-            newItem.appendChild(newLink);
-            newItem.title = newPosts[0][1];
-            newItem.href = `https://www.reddit.com${newPosts[0][0]}`;
-            newItem.addEventListener('click', function(){
-              chrome.tabs.create({ url: newItem.href });
-            });
-            views.newLinks.insertBefore(newItem, views.newLinks.firstChild);
-            views.clearBtn.style.display = 'inline-block';
-          }
-     }
-  });
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', `http://www.reddit.com/r/${item.subreddit.value.trim()}/new.json?`);
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      var data = JSON.parse(xhr.responseText);
+      var title = data.data.children[0].data.title;
+      var link = data.data.children[0].data.permalink;
+      if (currentLink !== link){
+        currentLink = link;
+        newPosts.unshift([link, title]);
+        counter = newPosts.length;
+        chrome.browserAction.setBadgeText({text: `${counter}`});
+        if (views){
+          var newItem = document.createElement('a');
+          var newLink = document.createTextNode(newPosts[0][1]);
+          newItem.appendChild(newLink);
+          newItem.title = newPosts[0][1];
+          newItem.href = `https://www.reddit.com${newPosts[0][0]}`;
+          newItem.addEventListener('click', function(){
+            chrome.tabs.create({ url: newItem.href });
+          });
+          views.newLinks.insertBefore(newItem, views.newLinks.firstChild);
+          views.clearBtn.style.display = 'inline-block';
+        }
+      }
+    }
+    else {
+      console.log(xhr.status);
+    }
+  };
+  xhr.send();
 }
