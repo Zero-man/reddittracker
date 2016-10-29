@@ -5,8 +5,6 @@ var submitBtn = document.getElementById('submit-button');
 var clearBtn = document.getElementById('clear-button');
 var BGPage = chrome.extension.getBackgroundPage();
 
-clearBtn.style.display = 'none';
-
 if (BGPage.newPosts.length !== 0){
   BGPage.newPosts.forEach(function(item, index){
       var newItem = document.createElement('a');
@@ -21,7 +19,6 @@ if (BGPage.newPosts.length !== 0){
   });
   clearBtn.style.display = 'inline-block';
 }
-
 if (BGPage.localStorage['subreddit'] !== undefined){
   subreddit.value = BGPage.localStorage.getItem('subreddit');
 }

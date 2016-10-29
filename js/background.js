@@ -65,8 +65,7 @@ function retrieveData(item){
           views.clearBtn.style.display = 'inline-block';
         }
       }
-    }
-    else {
+    } else {
       console.log(xhr.status);
     }
   };
