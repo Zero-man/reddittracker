@@ -1,4 +1,4 @@
-# Reddit Tracker
+# Subreddit Tracker
 
 This Chrome extension tracks a given subreddit's new posts.
 Use Reddit Tracker to stay up to date on new posts submitted to a given subreddit. This is useful for following subreddits where having updated information on new posts is beneficial, for example, deals subreddits.
