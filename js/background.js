@@ -1,3 +1,4 @@
+//TODO: Handle invalid subreddit name more gracefully (in http request)
 
 var newPosts = [];
 var counter = newPosts.length;
@@ -66,7 +67,7 @@ function retrieveData(item){
         }
       }
     } else {
-      console.log(xhr.status);
+      console.log('uh oh.'); //TODO here (maybe).
     }
   };
   xhr.send();
