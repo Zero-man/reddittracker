@@ -1,4 +1,4 @@
-# Reddit Tracker
+# Subreddit Tracker
 
 *See the `subreddit-tracker-firefox` repository for the Firefox version of this extension.*
 
