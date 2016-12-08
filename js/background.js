@@ -1,4 +1,3 @@
-//TODO: Handle invalid subreddit name more gracefully (in http request)
 
 var newPosts = [];
 var counter = newPosts.length;
@@ -19,6 +18,7 @@ function apiCall(){
   if (!intervalID){
     views.submitBtn.innerHTML = "Stop Tracking";
     localStorage.setItem('submitBtn', views.submitBtn.innerHTML);
+    retrieveData(views);
     intervalID = setInterval(function(){ retrieveData(views) }, interval);
   } else {
     views.submitBtn.innerHTML = "Track";
@@ -43,6 +43,14 @@ function retrieveData(item){
   var views = chrome.extension.getViews({type: 'popup'})[0];
   var xhr = new XMLHttpRequest();
   xhr.open('GET', `http://www.reddit.com/r/${item.subreddit.value.trim()}/new.json?`);
+  xhr.addEventListener("error", function(evt){
+    views.submitBtn.innerHTML = "Track";
+    localStorage.setItem('submitBtn', views.submitBtn.innerHTML);
+    localStorage.clear();
+    clearInterval(intervalID);
+    intervalID = null;
+    alert('Sorry, that is not a valid subreddit name! Please check your input and try again.');
+  });
   xhr.onload = function() {
     if (xhr.status === 200) {
       var data = JSON.parse(xhr.responseText);
@@ -66,8 +74,6 @@ function retrieveData(item){
           views.clearBtn.style.display = 'inline-block';
         }
       }
-    } else {
-      console.log('uh oh.'); //TODO here (maybe).
     }
   };
   xhr.send();
