@@ -5,8 +5,7 @@
   "description": "This extension tracks a given subreddit's new posts.",
   "version": "1.0.7",
   "background": {
-    "scripts": ["./js/background.js"],
-    "persistent": true
+    "scripts": ["./js/background.js"]
   },
   "icons": {
     "16": "icon16.png",
@@ -22,6 +21,7 @@
   "permissions": [
     "activeTab",
     "storage",
-    "background"
+    "background",
+    "notifications"
   ]
 }
