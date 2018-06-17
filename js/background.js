@@ -66,6 +66,16 @@ function retrieveData (subreddit, interval, submitBtn) {
             var addedItems = json.data.children.filter((e, i) => !currentListIDs.includes(e.data.id));
             if (addedItems.length) {
                 renderNewItems(addedItems);
+                var enableNotifications = JSON.parse(localStorage.getItem('notifications'));
+                if (enableNotifications) {
+                    chrome.notifications.create({ 
+                        type: 'basic',
+                        iconUrl: 'icon48.png', 
+                        title: 'Subreddit Tracker',
+                        message: 'New post(s) in your tracked subreddit!'
+                    });
+                }
+
                 currentListIDs = json.data.children.map(e => e.data.id);
             }
         })
@@ -73,6 +83,10 @@ function retrieveData (subreddit, interval, submitBtn) {
             stop(subreddit, interval, submitBtn);
             alert('Sorry, that is not a valid subreddit name! Please check your input and try again.');
         });
+}
+
+function setEnableNotifications (setting) {
+    localStorage.setItem('notifications', setting);
 }
 
 function renderNewItems (items) {

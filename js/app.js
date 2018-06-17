@@ -1,6 +1,7 @@
 var BGPage = chrome.extension.getBackgroundPage();
 var subreddit = document.getElementById('subreddit');
 var interval = document.getElementById('interval');
+var enableNotifications = document.getElementById('notifications');
 var newLinks = document.getElementById('new-links');
 var submitBtn = document.getElementById('submit-button');
 var clearBtn = document.getElementById('clear-button');
@@ -25,8 +26,16 @@ if (BGPage.localStorage['subreddit'] !== undefined){
 if (BGPage.localStorage['interval'] !== undefined){
     interval.value = BGPage.localStorage.getItem('interval');
 }
+
 if (BGPage.localStorage['submitBtn'] !== undefined && BGPage.intervalID !== undefined) {
     submitBtn.innerHTML = BGPage.localStorage.getItem('submitBtn');
+}
+
+if (BGPage.localStorage.getItem('notifications')) {
+    enableNotifications.checked = JSON.parse(BGPage.localStorage.getItem('notifications')) 
+} else {
+    enableNotifications.checked = true;
+    BGPage.setEnableNotifications(true);
 }
 
 submitBtn.addEventListener('click', function () {
@@ -41,4 +50,9 @@ submitBtn.addEventListener('click', function () {
 
 clearBtn.addEventListener('click', function(){
     BGPage.clearOnClick(newLinks, clearBtn);
+});
+
+enableNotifications.addEventListener('click', function(){
+    var enableNotifications = JSON.parse(BGPage.localStorage.getItem('notifications'));
+    BGPage.setEnableNotifications(!enableNotifications);
 });
