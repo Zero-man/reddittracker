@@ -15,6 +15,10 @@ body {
   height: 60px;
 }
 
+.form-input.check {
+  flex-direction: row;
+}
+
 .form-input label {
   font-size: 1.3em;
   color: #703c1d;
